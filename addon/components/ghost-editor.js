@@ -37,8 +37,6 @@ export default Ember.Component.extend({
             autofocus: this.get('shouldFocusEditor')
         };
 
-        console.log(this.get('shouldFocusEditor'));
-
         let editor = this.editor = new Mobiledoc.Editor(options);
         
         editor.postDidChange(()=>{
@@ -53,14 +51,16 @@ export default Ember.Component.extend({
                 }
             });
         });
-        window.editor = editor; //make editor a global so that I can inspect it's state with the console.
     },
     didRender( ) {
         
         if(this._rendered) {
             return;
         }
-        this.editor.render(this.$('.editor')[0]);
+        let editorDom = this.$('.editor')[0];
+        editorDom.__GHOST_EDITOR = this.editor; // attach reference of editor to dom for debugging and testing.
+                                                // TODO - only do the above when in debug or testing mode
+        this.editor.render(editorDom);
         this._rendered = true;
         /*if(this.get('container').lookup('controller:application').currentPath === 'editor.edit') {
 
